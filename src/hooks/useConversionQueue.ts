@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ConversionWorkerPool } from "@/lib/workerPool";
 import { isSvgFile, rasterizeSvgFile } from "@/lib/svgToRaster";
+import { isHeicFile, convertHeicFile } from "@/lib/heicToRaster";
 import type { ConversionSettings, ImageItem, WorkerRequest } from "@/lib/types";
 
 const DEFAULT_SETTINGS: ConversionSettings = {
@@ -40,7 +41,9 @@ export function useConversionQueue() {
       try {
         const { buffer, mimeType } = isSvgFile(item.file)
           ? await rasterizeSvgFile(item.file)
-          : { buffer: await item.file.arrayBuffer(), mimeType: item.file.type };
+          : isHeicFile(item.file)
+            ? await convertHeicFile(item.file)
+            : { buffer: await item.file.arrayBuffer(), mimeType: item.file.type };
 
         const request: WorkerRequest = {
           id: item.id,

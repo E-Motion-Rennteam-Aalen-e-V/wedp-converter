@@ -14,16 +14,6 @@ export function savingsPercent(original: number, result: number): number {
   return Math.round(((original - result) / original) * 100);
 }
 
-export function isHeic(mimeType: string, fileName: string): boolean {
-  const lower = fileName.toLowerCase();
-  return (
-    mimeType === "image/heic" ||
-    mimeType === "image/heif" ||
-    lower.endsWith(".heic") ||
-    lower.endsWith(".heif")
-  );
-}
-
 export function extensionFor(format: "webp" | "png" | "jpeg"): string {
   return format === "jpeg" ? "jpg" : format;
 }

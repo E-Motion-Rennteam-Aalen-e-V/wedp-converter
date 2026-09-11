@@ -1,11 +1,13 @@
 /// <reference lib="webworker" />
 
 // Runs entirely in a dedicated Web Worker — no serverless dependency.
-// Decodes PNG/JPG/GIF/BMP/SVG/WEBP natively via createImageBitmap, and
-// HEIC/HEIF via heic2any (WASM), then re-encodes through OffscreenCanvas.
+// Decodes raster images (PNG/JPG/GIF/BMP/WEBP) via createImageBitmap and
+// re-encodes through OffscreenCanvas. SVG and HEIC/HEIF are pre-converted
+// to a raster buffer on the main thread before reaching this worker,
+// since neither createImageBitmap(svg) nor heic2any work off-main-thread
+// (see src/lib/svgToRaster.ts and src/lib/heicToRaster.ts).
 
 import type { WorkerRequest, WorkerResponse, ResizeSettings } from "@/lib/types";
-import { isHeic } from "@/lib/format";
 
 const workerCtx = self as unknown as DedicatedWorkerGlobalScope;
 
@@ -48,21 +50,8 @@ function computeTargetSize(
   };
 }
 
-async function decodeToBitmap(
-  buffer: ArrayBuffer,
-  mimeType: string,
-  fileName: string
-): Promise<ImageBitmap> {
-  let blob = new Blob([buffer], { type: mimeType || "application/octet-stream" });
-
-  if (isHeic(mimeType, fileName)) {
-    const heic2any = (await import("heic2any")).default;
-    const converted = await heic2any({ blob, toType: "image/jpeg", quality: 0.92 });
-    const first = Array.isArray(converted) ? converted[0] : converted;
-    if (!first) throw new Error("HEIC-Konvertierung lieferte kein Ergebnis.");
-    blob = first;
-  }
-
+async function decodeToBitmap(buffer: ArrayBuffer, mimeType: string): Promise<ImageBitmap> {
+  const blob = new Blob([buffer], { type: mimeType || "application/octet-stream" });
   try {
     return await createImageBitmap(blob);
   } catch {
@@ -72,7 +61,7 @@ async function decodeToBitmap(
 
 async function handleConversion(req: WorkerRequest): Promise<WorkerResponse> {
   try {
-    const bitmap = await decodeToBitmap(req.buffer, req.mimeType, req.fileName);
+    const bitmap = await decodeToBitmap(req.buffer, req.mimeType);
     const { width, height } = computeTargetSize(
       bitmap.width,
       bitmap.height,
