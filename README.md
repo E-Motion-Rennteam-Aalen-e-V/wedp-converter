@@ -25,4 +25,6 @@ Netlify: `netlify.toml` ist enthalten (`@netlify/plugin-nextjs`, Cache-Header f�
 
 ## Schriften
 
-`src/app/fonts.ts` verwendet aktuell Google-Font-Ersatztypen (Big Shoulders Stencil Text / Lato) als Platzhalter für die lizenzierten Fonts "Airstrike" und "Lato Semibold", da deren Dateien nicht im Repo enthalten sein dürfen. Lizenzierte Font-Dateien unter `src/fonts/` ablegen und gemäß Kommentaren in `fonts.ts` auf `next/font/local` umstellen.
+- **Body**: echte **Lato Semibold** (Gewicht 600), lokal über `next/font/local` eingebunden (`src/fonts/lato/Lato-SemiBold.ttf` + Italic). Google Fonts hostet Lato nur in den Schnitten 100/300/400/700/900 — Semibold ist Teil der originalen, unter SIL Open Font License 1.1 freien Lato-Familie (siehe `src/fonts/lato/OFL.txt`) und wird deshalb als Static-Datei mitgeliefert.
+- **Headings**: **Big Shoulders Stencil** (Google Font) als dauerhafter, frei lizenzierter Ersatz für die kommerzielle "Airstrike"-Schrift. "Airstrike" selbst wird bewusst nicht eingebunden, da die Lizenzbedingungen eine Redistribution im Repo nicht zweifelsfrei erlauben.
+- **Mono**: Geist Mono via `next/font/google`.

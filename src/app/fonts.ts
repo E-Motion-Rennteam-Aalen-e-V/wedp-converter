@@ -1,15 +1,9 @@
-import { Big_Shoulders_Stencil, Lato, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
+import { Big_Shoulders_Stencil, Geist_Mono } from "next/font/google";
 
-// Stand-in for the licensed "Airstrike" stencil display font. Drop the real
-// Airstrike woff2 files into src/fonts/airstrike/ and swap this block for
-// next/font/local to use the original typeface:
-//
-//   import localFont from "next/font/local";
-//   export const heading = localFont({
-//     src: [{ path: "../fonts/airstrike/Airstrike.woff2", weight: "700" }],
-//     variable: "--font-heading",
-//     display: "swap",
-//   });
+// Racing/stencil heading look. Freely licensed Google Font, used in place of
+// the commercially licensed "Airstrike" typeface (kept permanently — see
+// README for the licensing rationale).
 export const heading = Big_Shoulders_Stencil({
   subsets: ["latin"],
   weight: ["500", "700"],
@@ -17,12 +11,15 @@ export const heading = Big_Shoulders_Stencil({
   display: "swap",
 });
 
-// Google's hosted Lato only ships 100/300/400/700/900 (no 600). For the
-// exact "Lato Semibold" cut, place the licensed ttf/woff2 under
-// src/fonts/lato/ and switch to next/font/local the same way as above.
-export const body = Lato({
-  subsets: ["latin"],
-  weight: ["400", "700"],
+// Real Lato Semibold (weight 600), the exact cut requested. Google Fonts
+// only serves 100/300/400/700/900 through its API, so this ships the
+// original SIL OFL-licensed static files locally instead — see
+// src/fonts/lato/OFL.txt.
+export const body = localFont({
+  src: [
+    { path: "../fonts/lato/Lato-SemiBold.ttf", weight: "600", style: "normal" },
+    { path: "../fonts/lato/Lato-SemiBoldItalic.ttf", weight: "600", style: "italic" },
+  ],
   variable: "--font-body",
   display: "swap",
 });
