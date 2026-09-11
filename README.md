@@ -2,6 +2,16 @@
 
 Clientseitiger WebP-Bildkonverter (Next.js 15, App Router, TypeScript, Tailwind v4). Sämtliche Konvertierung läuft im Browser via `OffscreenCanvas` in einem Pool von Web Workern — kein Upload, keine Serverless-Function.
 
+## Screenshots
+
+| Start | Batch-Konvertierung |
+|---|---|
+| ![Startseite](docs/01-start.png) | ![Batch-Konvertierung aller Formate](docs/02-batch-conversion.png) |
+
+| Einstellungen (Resize + PNG) | HEIC-Konvertierung |
+|---|---|
+| ![Resize- und PNG-Einstellungen](docs/03-settings-resize.png) | ![HEIC-Upload konvertiert zu WebP](docs/04-heic-conversion.png) |
+
 ## Features
 
 - Drag-and-Drop-Batch-Upload: PNG, JPG, GIF, BMP, SVG, HEIC/HEIF, WEBP
