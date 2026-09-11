@@ -9,12 +9,17 @@ const LOGIN_PATH = "/admin/login";
 // password-change redirect can exempt its own route without looping.
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const session = await verifySessionToken(request.cookies.get(SESSION_COOKIE_NAME)?.value);
 
   if (pathname === LOGIN_PATH) {
+    // Already authenticated — send straight to the app instead of
+    // re-showing the login form (still honoring a pending forced
+    // password change, same as any other route below).
+    if (session) {
+      return NextResponse.redirect(new URL(session.p ? PASSWORD_CHANGE_PATH : "/admin", request.url));
+    }
     return NextResponse.next();
   }
-
-  const session = await verifySessionToken(request.cookies.get(SESSION_COOKIE_NAME)?.value);
 
   if (!session) {
     return NextResponse.redirect(new URL(LOGIN_PATH, request.url));
