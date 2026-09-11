@@ -7,7 +7,11 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
-    ignores: ["src/workers/**"],
+    // A config object with only `ignores` applies globally, not just to
+    // the preceding config — this keeps eslint from linting Next's own
+    // generated output (`eslint .` doesn't auto-skip `.next` the way the
+    // `next lint` CLI wrapper does).
+    ignores: ["src/workers/**", ".next/**", "next-env.d.ts"],
   },
 ];
 
