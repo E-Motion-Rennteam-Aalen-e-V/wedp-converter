@@ -48,6 +48,12 @@ export async function fetchRemoteUser(username: string): Promise<RemoteUserRecor
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         cache: "no-store",
+        // Without this, an unreachable or slow GitHub API hangs the whole
+        // login request until the platform's own function timeout kills
+        // it. Fail fast instead — the login route already treats "no
+        // remote user found" as just falling through to the final
+        // unauthorized response.
+        signal: AbortSignal.timeout(5000),
       }
     );
     if (!response.ok) return null;
