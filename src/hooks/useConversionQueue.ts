@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ConversionWorkerPool } from "@/lib/workerPool";
+import { isSvgFile, rasterizeSvgFile } from "@/lib/svgToRaster";
 import type { ConversionSettings, ImageItem, WorkerRequest } from "@/lib/types";
 
 const DEFAULT_SETTINGS: ConversionSettings = {
@@ -37,11 +38,14 @@ export function useConversionQueue() {
       );
 
       try {
-        const buffer = await item.file.arrayBuffer();
+        const { buffer, mimeType } = isSvgFile(item.file)
+          ? await rasterizeSvgFile(item.file)
+          : { buffer: await item.file.arrayBuffer(), mimeType: item.file.type };
+
         const request: WorkerRequest = {
           id: item.id,
           buffer,
-          mimeType: item.file.type,
+          mimeType,
           fileName: item.file.name,
           outputFormat: activeSettings.outputFormat,
           quality: activeSettings.quality,
