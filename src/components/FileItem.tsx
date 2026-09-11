@@ -1,9 +1,11 @@
 "use client";
 
-import { AlertTriangle, CheckCircle2, Download, Loader2, RotateCw, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { AlertTriangle, CheckCircle2, Download, ImageOff, Loader2, RotateCw, X } from "lucide-react";
 import type { ImageItem, OutputFormat } from "@/lib/types";
 import { formatBytes, outputFileName, savingsPercent } from "@/lib/format";
 import { triggerDownload } from "@/lib/zip";
+import { isHeicFile } from "@/lib/heicToRaster";
 
 interface FileItemProps {
   item: ImageItem;
@@ -18,14 +20,38 @@ export function FileItem({ item, outputFormat, onRemove, onRetry }: FileItemProp
       ? savingsPercent(item.originalSize, item.resultSize)
       : null;
 
+  // Prefer showing the converted result once available — it reflects the
+  // actual output (incl. resize) and is always a browser-renderable format.
+  // Browsers cannot natively decode HEIC in <img>, so its raw previewUrl
+  // would otherwise render as a broken image until conversion finishes.
+  const [resultPreviewUrl, setResultPreviewUrl] = useState<string | null>(null);
+  useEffect(() => {
+    if (!item.resultBlob) {
+      setResultPreviewUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(item.resultBlob);
+    setResultPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [item.resultBlob]);
+
+  const canShowOriginalPreview = !isHeicFile(item.file);
+  const thumbnailSrc = resultPreviewUrl ?? (canShowOriginalPreview ? item.previewUrl : null);
+
   return (
     <li className="flex items-center gap-4 rounded-xl border border-border bg-surface p-3 sm:p-4">
-      {/* eslint-disable-next-line @next/next/no-img-element -- local blob: preview URL, not an optimizable remote asset */}
-      <img
-        src={item.previewUrl}
-        alt=""
-        className="h-14 w-14 shrink-0 rounded-lg border border-border object-cover"
-      />
+      {thumbnailSrc ? (
+        // eslint-disable-next-line @next/next/no-img-element -- local blob: preview URL, not an optimizable remote asset
+        <img
+          src={thumbnailSrc}
+          alt=""
+          className="h-14 w-14 shrink-0 rounded-lg border border-border object-cover"
+        />
+      ) : (
+        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border border-border bg-background text-muted">
+          <ImageOff className="h-5 w-5" aria-hidden="true" />
+        </div>
+      )}
 
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-semibold text-foreground">{item.file.name}</p>

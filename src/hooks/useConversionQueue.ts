@@ -4,7 +4,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ConversionWorkerPool } from "@/lib/workerPool";
 import { isSvgFile, rasterizeSvgFile } from "@/lib/svgToRaster";
 import { isHeicFile, convertHeicFile } from "@/lib/heicToRaster";
+import { resolveMimeType } from "@/lib/format";
 import type { ConversionSettings, ImageItem, WorkerRequest } from "@/lib/types";
+
+const SETTINGS_CHANGE_DEBOUNCE_MS = 400;
 
 const DEFAULT_SETTINGS: ConversionSettings = {
   outputFormat: "webp",
@@ -43,7 +46,7 @@ export function useConversionQueue() {
           ? await rasterizeSvgFile(item.file)
           : isHeicFile(item.file)
             ? await convertHeicFile(item.file)
-            : { buffer: await item.file.arrayBuffer(), mimeType: item.file.type };
+            : { buffer: await item.file.arrayBuffer(), mimeType: resolveMimeType(item.file) };
 
         const request: WorkerRequest = {
           id: item.id,
@@ -131,6 +134,26 @@ export function useConversionQueue() {
   const reconvertAll = useCallback(() => {
     items.forEach((item) => void processItem(item, settings));
   }, [items, processItem, settings]);
+
+  // Re-run the conversion for already-uploaded images whenever the output
+  // format, quality, or resize settings change, so the file list always
+  // reflects the currently selected settings — not just newly added files.
+  // Debounced so dragging the quality slider doesn't spawn a worker job per tick.
+  const isFirstSettingsRender = useRef(true);
+  useEffect(() => {
+    if (isFirstSettingsRender.current) {
+      isFirstSettingsRender.current = false;
+      return;
+    }
+    if (items.length === 0) return;
+    const timeout = setTimeout(() => {
+      items.forEach((item) => void processItem(item, settings));
+    }, SETTINGS_CHANGE_DEBOUNCE_MS);
+    return () => clearTimeout(timeout);
+    // Intentionally excludes `items`/`processItem`: only a settings change
+    // should trigger a batch re-convert, not every list mutation.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings]);
 
   const overallProgress = useMemo(() => {
     if (items.length === 0) return 0;

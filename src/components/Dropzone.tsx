@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { UploadCloud } from "lucide-react";
 import { ACCEPTED_EXTENSIONS } from "@/lib/types";
 
@@ -10,16 +10,32 @@ interface DropzoneProps {
 
 export function Dropzone({ onFiles }: DropzoneProps) {
   const [isDragActive, setIsDragActive] = useState(false);
+  const [rejectedNotice, setRejectedNotice] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const dragCounter = useRef(0);
+
+  useEffect(() => {
+    if (!rejectedNotice) return;
+    const timeout = setTimeout(() => setRejectedNotice(null), 5000);
+    return () => clearTimeout(timeout);
+  }, [rejectedNotice]);
 
   const handleFiles = useCallback(
     (fileList: FileList | null) => {
       if (!fileList) return;
-      const files = Array.from(fileList).filter((file) => {
+      const all = Array.from(fileList);
+      const files = all.filter((file) => {
         const lower = file.name.toLowerCase();
         return ACCEPTED_EXTENSIONS.some((ext) => lower.endsWith(ext));
       });
+
+      const rejectedCount = all.length - files.length;
+      setRejectedNotice(
+        rejectedCount > 0
+          ? `${rejectedCount} Datei${rejectedCount > 1 ? "en" : ""} übersprungen (nicht unterstütztes Format).`
+          : null
+      );
+
       if (files.length > 0) onFiles(files);
     },
     [onFiles]
@@ -76,6 +92,11 @@ export function Dropzone({ onFiles }: DropzoneProps) {
       <p className="mt-2 font-mono text-xs font-normal text-muted">
         PNG · JPG · GIF · BMP · SVG · HEIC · WEBP — mehrere Dateien möglich
       </p>
+      {rejectedNotice && (
+        <p className="mt-3 font-mono text-xs font-normal text-orange-400" role="status">
+          {rejectedNotice}
+        </p>
+      )}
     </div>
   );
 }

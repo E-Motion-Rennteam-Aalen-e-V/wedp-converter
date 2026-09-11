@@ -22,21 +22,26 @@ function computeTargetSize(
   sourceHeight: number,
   resize: ResizeSettings
 ): { width: number; height: number } {
-  if (!resize.enabled || (!resize.width && !resize.height)) {
+  // Treat non-positive values (0, negative, or a stray user input) the
+  // same as "unset" so a canvas of zero/negative size can never happen.
+  const width = resize.width && resize.width > 0 ? resize.width : null;
+  const height = resize.height && resize.height > 0 ? resize.height : null;
+
+  if (!resize.enabled || (!width && !height)) {
     return { width: sourceWidth, height: sourceHeight };
   }
   const aspect = sourceWidth / sourceHeight;
 
   if (resize.maintainAspect) {
-    if (resize.width && !resize.height) {
-      return { width: resize.width, height: Math.round(resize.width / aspect) };
+    if (width && !height) {
+      return { width, height: Math.max(1, Math.round(width / aspect)) };
     }
-    if (resize.height && !resize.width) {
-      return { width: Math.round(resize.height * aspect), height: resize.height };
+    if (height && !width) {
+      return { width: Math.max(1, Math.round(height * aspect)), height };
     }
-    if (resize.width && resize.height) {
+    if (width && height) {
       // Fit within the box while preserving aspect ratio.
-      const scale = Math.min(resize.width / sourceWidth, resize.height / sourceHeight);
+      const scale = Math.min(width / sourceWidth, height / sourceHeight);
       return {
         width: Math.max(1, Math.round(sourceWidth * scale)),
         height: Math.max(1, Math.round(sourceHeight * scale)),
@@ -45,8 +50,8 @@ function computeTargetSize(
   }
 
   return {
-    width: resize.width ?? sourceWidth,
-    height: resize.height ?? sourceHeight,
+    width: width ?? sourceWidth,
+    height: height ?? sourceHeight,
   };
 }
 
