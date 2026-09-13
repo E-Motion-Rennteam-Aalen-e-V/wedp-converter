@@ -83,7 +83,25 @@ export default function DatenschutzPage() {
         </p>
       </LegalSection>
 
-      <LegalSection title="6. Anmeldedaten im Admin-Bereich">
+      <LegalSection title="6. Kontaktformular">
+        <p>
+          Wenn du uns über das{" "}
+          <a href="/kontakt" className="text-accent-text underline">
+            Kontaktformular
+          </a>{" "}
+          eine Anfrage sendest, verarbeiten wir die von dir dort angegebenen Daten (Name, E-Mail-Adresse,
+          Nachricht sowie optionale Anhänge) zur Bearbeitung deiner Anfrage und für den Fall von
+          Anschlussfragen. Rechtsgrundlage ist deine im Formular erteilte Einwilligung
+          (Art. 6 Abs. 1 lit. a DSGVO). Zur Erkennung automatisierter Spam-Einträge setzen wir ein
+          unsichtbares Formularfeld sowie eine Plausibilitätsprüfung der Ausfüllzeit ein; hierbei werden
+          keine zusätzlichen personenbezogenen Daten erhoben. Deine Angaben leiten wir intern an die für
+          die Bearbeitung zuständigen Teammitglieder weiter, geben sie aber nicht ohne deine Einwilligung
+          an außenstehende Dritte weiter. Die Daten werden gelöscht, sobald sie für die Erreichung des
+          Zwecks ihrer Erhebung nicht mehr erforderlich sind, spätestens nach 24 Monaten.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="7. Anmeldedaten im Admin-Bereich">
         <p>
           Zur Absicherung des internen Admin-Bereichs verarbeiten wir beim Login-Versuch den eingegebenen
           Benutzernamen sowie die IP-Adresse (zur Erkennung übermäßig vieler Anmeldeversuche, maximal 5 pro
@@ -96,7 +114,7 @@ export default function DatenschutzPage() {
         </p>
       </LegalSection>
 
-      <LegalSection title="7. Schriftarten">
+      <LegalSection title="8. Schriftarten">
         <p>
           Diese Anwendung nutzt zur einheitlichen Darstellung von Schriftarten die Dienste „Google Fonts“
           sowie eine lokal eingebettete Schriftdatei. Alle verwendeten Schriftdateien werden bereits beim
@@ -106,7 +124,7 @@ export default function DatenschutzPage() {
         </p>
       </LegalSection>
 
-      <LegalSection title="8. SSL-/TLS-Verschlüsselung">
+      <LegalSection title="9. SSL-/TLS-Verschlüsselung">
         <p>
           Diese Anwendung nutzt aus Sicherheitsgründen eine SSL-/TLS-Verschlüsselung zur Übertragung
           vertraulicher Inhalte, etwa der Anmeldedaten im Admin-Bereich. Eine verschlüsselte Verbindung
@@ -115,7 +133,7 @@ export default function DatenschutzPage() {
         </p>
       </LegalSection>
 
-      <LegalSection title="9. Deine Rechte">
+      <LegalSection title="10. Deine Rechte">
         <p>
           Du hast jederzeit das Recht auf Auskunft über deine bei uns gespeicherten personenbezogenen Daten,
           deren Herkunft und Empfänger sowie den Zweck der Datenverarbeitung (Art. 15 DSGVO). Ebenso steht
@@ -128,7 +146,7 @@ export default function DatenschutzPage() {
         </p>
       </LegalSection>
 
-      <LegalSection title="10. Beschwerderecht bei der Aufsichtsbehörde">
+      <LegalSection title="11. Beschwerderecht bei der Aufsichtsbehörde">
         <p>
           Unbeschadet eines anderweitigen verwaltungsrechtlichen oder gerichtlichen Rechtsbehelfs steht dir
           ein Beschwerderecht bei einer Datenschutz-Aufsichtsbehörde zu, insbesondere in dem Mitgliedstaat
@@ -140,7 +158,7 @@ export default function DatenschutzPage() {
         </p>
       </LegalSection>
 
-      <LegalSection title="11. Änderung dieser Datenschutzerklärung">
+      <LegalSection title="12. Änderung dieser Datenschutzerklärung">
         <p>
           Wir behalten uns vor, diese Datenschutzerklärung anzupassen, damit sie stets den aktuellen
           rechtlichen Anforderungen entspricht oder um Änderungen unserer Leistungen umzusetzen. Für deinen
