@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { Dropzone } from "@/components/Dropzone";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { FileList } from "@/components/FileList";
@@ -45,9 +46,7 @@ export default function Home() {
           isZipping={isZipping}
         />
       </main>
-      <footer className="mt-16 border-t border-border py-6 text-center font-mono text-[11px] font-normal text-muted">
-        Alle Konvertierungen laufen lokal im Browser — es werden keine Bilder hochgeladen.
-      </footer>
+      <Footer note="Alle Konvertierungen laufen lokal im Browser — es werden keine Bilder hochgeladen." />
     </div>
   );
 }

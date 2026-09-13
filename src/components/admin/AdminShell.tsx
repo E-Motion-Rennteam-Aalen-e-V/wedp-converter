@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { LogOut, ShieldCheck } from "lucide-react";
+import { Footer } from "@/components/Footer";
 import { accessibleSections, ROLE_LABELS } from "@/lib/admin/roles";
 import type { AdminRole } from "@/lib/admin/types";
 
@@ -68,6 +69,7 @@ export function AdminShell({ username, roles, children }: AdminShellProps) {
       </header>
 
       <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">{children}</main>
+      <Footer />
     </div>
   );
 }
