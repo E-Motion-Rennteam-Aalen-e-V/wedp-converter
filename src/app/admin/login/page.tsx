@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LogIn, ShieldCheck } from "lucide-react";
+import { Footer } from "@/components/Footer";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -39,7 +40,8 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 py-12">
+    <div className="flex min-h-screen flex-col">
+      <div className="flex flex-1 items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm">
         <div className="mb-6 flex flex-col items-center gap-2 text-center">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent shadow-[0_0_24px_-4px_var(--color-accent)]">
@@ -95,6 +97,8 @@ export default function AdminLoginPage() {
           </button>
         </form>
       </div>
+      </div>
+      <Footer />
     </div>
   );
 }
